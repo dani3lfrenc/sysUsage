@@ -24,7 +24,7 @@ def draw_screen(stdscr):
         stdscr.addstr(2, 0, "CPU USAGE", curses.A_BOLD|curses.color_pair(1))
         for i, usage in enumerate(cpu_usage):
             stdscr.addstr(4 + i, 2, f"CPU {i}: {usage}%")
-        total_cpu_usage = sum(cpu_usage)/len(cpu_usage)
+        total_cpu_usage = psutil.cpu_percent()
         stdscr.addstr(4 + len(cpu_usage) + 1, 2, f"AVERAGE CPU TOTAL USE: {total_cpu_usage:.2f}%")
 
         stdscr.refresh()
