@@ -41,35 +41,62 @@ def draw_screen(stdscr):
         cpu_start_row = 2
         cpu_start_col = 0
 
-        stdscr.addstr(cpu_start_row, cpu_start_col, "CPU USAGE", curses.A_BOLD | curses.color_pair(1))
+        stdscr.addstr(cpu_start_row, cpu_start_col, "CPU INFO", curses.A_BOLD | curses.color_pair(1))
 
         for i, usage in enumerate(cpu_usage):
             stdscr.addstr(cpu_start_row + 2 + i, cpu_start_col + 2, f"CPU {i}: {usage}%")
 
         total_cpu_usage = psutil.cpu_percent()
-        stdscr.addstr(cpu_start_row + 2 + len(cpu_usage) + 1, cpu_start_col + 2, f"CPU TOTAL USE: {total_cpu_usage:.2f}%")
-
-
+        stdscr.addstr(cpu_start_row + 2 + len(cpu_usage) + 1, cpu_start_col + 2, f"CPU total use: {total_cpu_usage:.2f}%")
 
 
         #------------------
         # Draw the line between CPU and MEM
-        barrier_column_cpu_mem = 35
-        for i in range(cpu_start_row, cpu_start_row + 2 + len(cpu_usage) + 2):
+        barrier_column_cpu_mem = 30
+        for i in range(cpu_start_row, 14):
             stdscr.addstr(i, barrier_column_cpu_mem, "|")
 
         #------------------
         # Draw the MEM info
         mem_start_row = cpu_start_row
         mem_start_col = barrier_column_cpu_mem + 4
-        stdscr.addstr(mem_start_row, mem_start_col, "MEMORY USED", curses.A_BOLD | curses.color_pair(1))
+        stdscr.addstr(mem_start_row, mem_start_col, "MEMORY INFO", curses.A_BOLD | curses.color_pair(1))
         mem_available_gb = mem_usage.available / (1024 ** 3)
         mem_used_gb = mem_usage.used / (1024 ** 3)
-        stdscr.addstr(mem_start_row + 2, mem_start_col, f"MEMORY AVAILABLE: {mem_available_gb:.2f} GB")
-        stdscr.addstr(mem_start_row + 3, mem_start_col, f"MEMORY USED: {mem_used_gb:.2f} GB")
+        mem_total_gb = mem_usage.total / (1024 ** 3)
+        mem_start_col+=1
+        stdscr.addstr(mem_start_row + 2, mem_start_col, f"Memory avaiable: {mem_available_gb:.2f} GB")
+        stdscr.addstr(mem_start_row + 3, mem_start_col, f"Memory used: {mem_used_gb:.2f} GB")
+        stdscr.addstr(mem_start_row + 5, mem_start_col, f"Total memory: {mem_total_gb:.2f} GB")
+
+
+        #------------------
+        # Draw the line between MEM and DISK
+        barrier_column_mem_disk = 62
+        for i in range(mem_start_row, 14):
+            stdscr.addstr(i, barrier_column_mem_disk, "|")
+
+
+        #------------------
+        # Draw the DISK info
+        disk_start_row = mem_start_row
+        disk_start_col = barrier_column_mem_disk + 4
+        disk_usage = psutil.disk_usage('/')
+        disk_free_gb = disk_usage.free / (1024 ** 3)
+        disk_used_gb = disk_usage.used / (1024 ** 3)
+        stdscr.addstr(disk_start_row, disk_start_col, "DISK INFO", curses.A_BOLD | curses.color_pair(1))
+        disk_start_col+= 1
+        stdscr.addstr(disk_start_row + 2, disk_start_col, f"Disk free : {disk_free_gb:.2f} GB")
+        stdscr.addstr(disk_start_row + 3, disk_start_col, f"Disk used: {disk_used_gb:.2f} GB")
+
+        #------------------
+        # Draw the line between MEM and DISK
+        barrier_column_mem_disk = 90
+        for i in range(disk_start_row, 14):
+            stdscr.addstr(i, barrier_column_mem_disk, "|")
+
 
         stdscr.refresh()
-
         key = stdscr.getch()
         if key == ord('s'):
             search_resource()
