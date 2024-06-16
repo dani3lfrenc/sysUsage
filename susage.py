@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+
+
 import os
 import psutil
 import curses
@@ -10,7 +13,7 @@ def search_resource():
 
 def resize_terminal():
     current_os = platform.system()
-    if current_os == 'Linux' or current_os == 'Darwin':  # Darwin è macOS
+    if current_os == 'Linux' or current_os == 'Darwin':
         os.system('resize -s 30 100')
     elif current_os == 'Windows':
         os.system('mode con: cols=100 lines=30')
