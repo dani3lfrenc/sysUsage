@@ -15,6 +15,21 @@ if [ ! -d "$DEST_DIR" ]; then
     exit 1
 fi
 
+
+check_platform() {
+    platform=$(uname)
+    if [[ "$platform" == "Linux" || "$platform" == "Darwin" ]]; then
+        pip3 install curses
+    elif [[ "$platform" == "Windows" ]]; then
+    else
+        exit 1
+    fi
+}
+
+check_platform
+pip install -r "${SCRIPT_DIR}/requirements.txt"
+
+
 chmod +x "$FILE_PATH"
 
 sudo mv "$FILE_PATH" "$DEST_DIR/$FILE_NAME"
