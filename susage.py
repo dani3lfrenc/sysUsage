@@ -1,11 +1,31 @@
+import os
 import psutil
 import curses
+import platform
+
 
 
 def search_resource():
     pass
 
+def resize_terminal():
+    current_os = platform.system()
+    if current_os == 'Linux' or current_os == 'Darwin':  # Darwin è macOS
+        os.system('resize -s 30 100')
+    elif current_os == 'Windows':
+        os.system('mode con: cols=100 lines=30')
 
+def check_terminal_size(stdscr):
+    while True:
+        w_rows, w_cols = stdscr.getmaxyx()
+        if w_cols >= 100 and w_rows >= 20:
+            break
+        stdscr.clear()
+        stdscr.addstr(0, 0, "Resizing terminal to at least 100x20...", curses.color_pair(1))
+        stdscr.refresh()
+        resize_terminal()
+        stdscr.refresh()
+        curses.napms(1000)
 
 
 def draw_screen(stdscr):
@@ -19,6 +39,9 @@ def draw_screen(stdscr):
     curses.init_pair(1, curses.COLOR_CYAN, curses.COLOR_BLACK)
     # For bottom bar
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_CYAN)
+
+    check_terminal_size(stdscr)
+
 
     while True:
         stdscr.erase()
