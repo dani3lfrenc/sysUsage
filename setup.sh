@@ -20,7 +20,6 @@ check_platform() {
     platform=$(uname)
     if [[ "$platform" == "Linux" || "$platform" == "Darwin" ]]; then
         pip3 install curses
-    elif [[ "$platform" == "Windows" ]]; then
     else
         exit 1
     fi
