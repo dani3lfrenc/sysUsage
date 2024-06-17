@@ -2,14 +2,12 @@
 
 
 import os
+import socket
 import psutil
 import curses
 import platform
 
 
-
-def search_resource():
-    pass
 
 def resize_terminal():
     current_os = platform.system()
@@ -30,6 +28,26 @@ def check_terminal_size(stdscr):
         stdscr.refresh()
         curses.napms(1000)
 
+def draw_title (stdscr, color):
+    title = [
+" ___ _   _ ___  __ _  __ _  ___ ",
+"/ __| | | / __|/ _` |/ _` |/ _ \\",
+"\__ \ |_| \__ \ (_| | (_| |  __/",
+"|___/\__,_|___/\__,_|\__, |\___|",
+" @dani3lfrenc        |___/      ",
+""
+]
+    
+    
+
+    w_rows, w_cols = stdscr.getmaxyx()
+    start_x = (w_cols - len(title[0])) // 2
+    
+    for i, line in enumerate(title):
+        stdscr.addstr(i, start_x, line, color | curses.A_BOLD)
+
+    stdscr.addstr(i+1, 0, "")
+
 
 def draw_screen(stdscr):
     stdscr.clear()
@@ -49,11 +67,18 @@ def draw_screen(stdscr):
     while True:
         stdscr.erase()
 
-        # GET CPU USAGE and MEM USAGE
+        # GET CPU, MEM and NET usage
         cpu_usage = psutil.cpu_percent(percpu=True)
         mem_usage = psutil.virtual_memory()
+        net_usage = psutil.net_io_counters(pernic=False, nowrap=True)
+        
 
+        draw_title(stdscr, curses.color_pair(1))
 
+        
+        cpu_start_row, cpu_start_col = stdscr.getyx()
+        cpu_start_row += 2
+        
 
         #------------------
         # Draw the bottom bar
@@ -64,10 +89,9 @@ def draw_screen(stdscr):
 
         #------------------
         # Draw the CPU info
-        cpu_start_row = 2
-        cpu_start_col = 0
+        
 
-        stdscr.addstr(cpu_start_row, cpu_start_col, "CPU INFO", curses.A_BOLD | curses.color_pair(1))
+        stdscr.addstr(cpu_start_row, cpu_start_col + 1, "CPU INFO", curses.A_BOLD | curses.color_pair(1))
 
         for i, usage in enumerate(cpu_usage):
             stdscr.addstr(cpu_start_row + 2 + i, cpu_start_col + 2, f"CPU {i}: {usage}%")
@@ -78,8 +102,8 @@ def draw_screen(stdscr):
 
         #------------------
         # Draw the line between CPU and MEM
-        barrier_column_cpu_mem = 30
-        for i in range(cpu_start_row, 14):
+        barrier_column_cpu_mem = 28
+        for i in range(cpu_start_row, 22):
             stdscr.addstr(i, barrier_column_cpu_mem, "|")
 
         #------------------
@@ -98,8 +122,8 @@ def draw_screen(stdscr):
 
         #------------------
         # Draw the line between MEM and DISK
-        barrier_column_mem_disk = 62
-        for i in range(mem_start_row, 14):
+        barrier_column_mem_disk = 60
+        for i in range(mem_start_row, 22):
             stdscr.addstr(i, barrier_column_mem_disk, "|")
 
 
@@ -116,17 +140,30 @@ def draw_screen(stdscr):
         stdscr.addstr(disk_start_row + 3, disk_start_col, f"Disk used: {disk_used_gb:.2f} GB")
 
         #------------------
-        # Draw the line between MEM and DISK
-        barrier_column_mem_disk = 90
-        for i in range(disk_start_row, 14):
-            stdscr.addstr(i, barrier_column_mem_disk, "|")
+        # Draw the line between DISK and NETWORK
+        barrier_column_disk_net =88
+        for i in range(disk_start_row, 22):
+            stdscr.addstr(i, barrier_column_disk_net, "|")
+
+        #------------------
+        # Draw the NETOWRK info
+        net_start_row = disk_start_row
+        net_start_col = barrier_column_disk_net + 4
+        stdscr.addstr(net_start_row, net_start_col, "NETWORK INFO", curses.A_BOLD | curses.color_pair(1))
+        net_start_col+= 1
+        stdscr.addstr(net_start_row + 2, net_start_col, f"Bytes sent: {net_usage.bytes_sent}")
+        stdscr.addstr(net_start_row + 3, net_start_col, f"Bytes received: {net_usage.bytes_recv}")
+        stdscr.addstr(net_start_row + 4, net_start_col, f"Packets sent: {net_usage.packets_sent}")
+        stdscr.addstr(net_start_row + 5, net_start_col, f"Packets received: {net_usage.packets_recv}")
+        hostname = socket.gethostname()
+        ipAdd = socket.gethostbyname(hostname)
+        stdscr.addstr(net_start_row + 6, net_start_col, f"Local IP address: {ipAdd}")
+
 
 
         stdscr.refresh()
         key = stdscr.getch()
-        if key == ord('s'):
-            search_resource()
-        elif key == ord('q'):
+        if key == ord('q'):
             break
 
 def main():
