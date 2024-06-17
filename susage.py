@@ -9,13 +9,13 @@ import platform
 def resize_terminal():
     current_os = platform.system()
     if current_os == 'Linux' or current_os == 'Darwin':
-        os.system('resize -s 50 160')
+        os.system('resize -s 50 135')
     elif current_os == 'Windows':
-        os.system('mode con: cols=160 lines=50')
+        os.system('mode con: cols=135 lines=50')
 
 def check_terminal_size(stdscr):
     w_rows, w_cols = stdscr.getmaxyx()
-    if w_cols < 160 or w_rows < 50:
+    if w_cols < 135 or w_rows < 50:
         resize_terminal()
         return False
 
@@ -25,12 +25,12 @@ def draw_title(stdscr, color):
     title = [
         "                                                                                                    ",
         "                                                                                           .        ",
-        "                          ____    _   _   _ ____    _    ____ _____                   .::^!J7.      ",
-        "                         / ___|  / \ | | | / ___|  / \  / ___| ____|               .^!?JJYJYYYY?!.   ",
-        "                         \___ \ / _ \| | | \___ \ / _ \| |  _|  _|               .~?JJJJ????JJY5PY.  ",
-        "                          ___) / ___ \ |_| |___) / ___ \ |_| | |___            :!?JJ??????JJYYY5PG7  ",
-        "   .^~!777!~^.           |____/_/   \_\___/|____/_/   \_\____|_____|       .:~?JJJ??????JJJYY55PGB~  ",
-        "  ^JYYJJJJJJJJ?~.                                                      .^!?JJJJ??????JYJYY55PGBP~   ",
+        "                          ____  _   _ ____    _    ____ _____                           .::^!J7.      ",
+        "                         / ___|| | | / ___|  / \  / ___| ____|                       .^!?JJYJYYYY?!.   ",
+        "                         \___ \| | | \___ \ / _ \| |  _|  _|                      .~?JJJJ????JJY5PY.  ",
+        "                          ___) | |_| |___) / ___ \ |_| | |___                  :!?JJ??????JJYYY5PG7  ",
+        "   .^~!777!~^.           |____/ \___/|____/_/   \_\____|_____|             .:~?JJJ??????JJJYY55PGB~  ",
+        "  ^JYYJJJJJJJJ?~.                    @dani3lfrenc                       .^!?JJJJ??????JYJYY55PGBP~   ",
         " .Y5YYJJJJ???JJJJ7~^:..                                           .:^!7?JJ????????JJYYY555PGBBJ.    ",
         " .YGP5YYYJ??????JJJJJJ?7!~^:..                            ..:^~!7?JJJJJ???????JJJJYY555PGBGBP~     ",
         "  :5BP555YYJJJ?77????JJJJJJJ???7!!~^^::......:::^^~~!!!!7???J??JJJJ??????77??JJYY555PGBGY^       ",
@@ -45,6 +45,9 @@ def draw_title(stdscr, color):
         ""
     ]
     
+    
+
+
 
     w_rows, w_cols = stdscr.getmaxyx()
 
@@ -77,7 +80,7 @@ def draw_content(stdscr):
     stdscr.addstr(cpu_start_row, cpu_start_col + 1, "CPU INFO", curses.A_BOLD | curses.color_pair(1))
 
     for i, usage in enumerate(cpu_usage):
-        stdscr.addstr(cpu_start_row + 2 + i, cpu_start_col + 2, f"CPU {i}: {usage}%")
+        stdscr.addstr(cpu_start_row + 2 + i, cpu_start_col + 2, f"CPU {i+1}: {usage}%")
 
     total_cpu_usage = psutil.cpu_percent()
     stdscr.addstr(cpu_start_row + 2 + len(cpu_usage) + 1, cpu_start_col + 2, f"CPU total use: {total_cpu_usage:.2f}%")
