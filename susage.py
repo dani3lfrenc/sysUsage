@@ -139,8 +139,8 @@ def draw_content(stdscr):
         if i >= stdscr.getmaxyx()[0] - 2:
             break
         pid = proc.info['pid']
-        name = proc.info['name']
-        username = proc.info['username']
+        name = str(proc.info['name'])[:20]
+        username = str(proc.info['username'])[:15]
         stdscr.addstr(i, proc_start_col, f"{pid:5}")
         stdscr.addstr(i, proc_start_col + 10, f"{name}")
         stdscr.addstr(i, proc_start_col + 40, f"{username}")
