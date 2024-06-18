@@ -130,6 +130,11 @@ def draw_content(stdscr):
     proc_start_row = cpu_final_row
     proc_start_col = 1
     stdscr.addstr(proc_start_row, proc_start_col, "PROCESSES", curses.A_BOLD | curses.color_pair(1))
+    proc_start_row += 2
+    stdscr.addstr(proc_start_row, proc_start_col + 1, "PID", curses.color_pair(1))
+    stdscr.addstr(proc_start_row, proc_start_col + 10, "NAME", curses.color_pair(1))
+    stdscr.addstr(proc_start_row, proc_start_col + 40, "USERNAME", curses.color_pair(1))
+
     for i, proc in enumerate(processes[cpu_final_row:], start=proc_start_row + 2):
         if i >= stdscr.getmaxyx()[0] - 2:
             break
