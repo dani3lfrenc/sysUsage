@@ -125,6 +125,8 @@ def draw_content(stdscr):
     hostname = socket.gethostname()
     ipAdd = socket.gethostbyname(hostname)
     stdscr.addstr(net_start_row + 6, net_start_col, f"Local IP address: {ipAdd}")
+    net_start_row -= 1
+
 
     # Draw the PROCESSES info
     proc_start_row = cpu_final_row
@@ -144,6 +146,15 @@ def draw_content(stdscr):
         stdscr.addstr(i, proc_start_col, f"{pid:5}")
         stdscr.addstr(i, proc_start_col + 10, f"{name}")
         stdscr.addstr(i, proc_start_col + 40, f"{username}")
+
+    proc_start_row-=2
+
+
+    # Draw the system info
+    sys_start_row = proc_start_row
+    sys_start_col = net_start_col
+    
+
 
 def draw_screen(stdscr):
     stdscr.clear()
