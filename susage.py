@@ -5,6 +5,7 @@ import socket
 import psutil
 import curses
 import platform
+import datetime
 
 def resize_terminal():
     current_os = platform.system()
@@ -125,7 +126,7 @@ def draw_content(stdscr):
     hostname = socket.gethostname()
     ipAdd = socket.gethostbyname(hostname)
     stdscr.addstr(net_start_row + 6, net_start_col, f"Local IP address: {ipAdd}")
-    net_start_row -= 1
+    net_start_col -= 1
 
 
     # Draw the PROCESSES info
@@ -153,8 +154,11 @@ def draw_content(stdscr):
     # Draw the system info
     sys_start_row = proc_start_row
     sys_start_col = net_start_col
-    
-
+    stdscr.addstr(sys_start_row, sys_start_col, "SYSTEM INFO", curses.color_pair(1) | curses.A_BOLD)
+    sys_start_col+=1
+    boot_time = psutil.boot_time()
+    time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+    stdscr.addstr(sys_start_row +2, sys_start_col, f"Boot time: {time}")
 
 def draw_screen(stdscr):
     stdscr.clear()
