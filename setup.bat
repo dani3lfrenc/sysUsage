@@ -1,22 +1,41 @@
 @echo off
+setlocal
+
+
+set PYTHON_SCRIPT=susage.py
+
+
+set SCRIPT_ALIAS=myscript
+
+
 set SCRIPT_DIR=%~dp0
 
-set SCRIPT_DIR=%SCRIPT_DIR:~0,-1%
 
-echo %PATH% | find "%SCRIPT_DIR%" >nul
-if %ERRORLEVEL%==0 (
-    echo Il percorso %SCRIPT_DIR% è già nel PATH.
-) else (
-    echo Adding %SCRIPT_DIR% to the PATH...
-    setx PATH "%PATH%;%SCRIPT_DIR%" /M
-    if %ERRORLEVEL% neq 0 (
-        echo Error while adding directory to PATH.
-        pause
-        exit /b 1
-    ) else (
-        echo Directory added to PATH successfully.
-    )
+set SCRIPT_PATH=%SCRIPT_DIR%%PYTHON_SCRIPT%
+
+
+if not exist "%SCRIPT_PATH%" (
+    echo Error: The file %SCRIPT_PATH% does not exist.
+    exit /b 1
 )
 
-echo Setup completed. You can now run 'susage' from any location.
-pause
+
+set WRAPPER_PATH=%SCRIPT_DIR%%SCRIPT_ALIAS%.bat
+echo @echo off > "%WRAPPER_PATH%"
+echo python "%SCRIPT_PATH%" %%* >> "%WRAPPER_PATH%"
+
+
+setx PATH "%PATH%;%SCRIPT_DIR%" >nul
+
+
+pip3 show psutil >nul 2>&1
+if %errorlevel% neq 0 (
+    echo psutil is not installed. Installing...
+    pip3 install psutil
+) else (
+    echo psutil is already installed.
+)
+
+echo Setup complete. You can now run the script by typing '%SCRIPT_ALIAS%' from any command prompt.
+
+endlocal
