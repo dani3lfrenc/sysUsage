@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import socket
 import os
 import socket
 import psutil
@@ -9,6 +10,7 @@ import datetime
 
 def resize_terminal():
     current_os = platform.system()
+    print(current_os)
     if current_os == 'Linux' or current_os == 'Darwin':
         os.system('resize -s 50 135')
     elif current_os == 'Windows':
@@ -21,6 +23,14 @@ def check_terminal_size(stdscr):
         return False
 
     return True
+
+def ip_adress():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = str(s.getsockname()[0])
+    s.close()
+    return ip
+
 
 def draw_title(stdscr, color):
     title = [
@@ -123,9 +133,7 @@ def draw_content(stdscr):
     stdscr.addstr(net_start_row + 3, net_start_col, f"Bytes received: {net_usage.bytes_recv}")
     stdscr.addstr(net_start_row + 4, net_start_col, f"Packets sent: {net_usage.packets_sent}")
     stdscr.addstr(net_start_row + 5, net_start_col, f"Packets received: {net_usage.packets_recv}")
-    hostname = socket.gethostname()
-    ipAdd = socket.gethostbyname(hostname)
-    stdscr.addstr(net_start_row + 6, net_start_col, f"Local IP address: {ipAdd}")
+    stdscr.addstr(net_start_row + 6, net_start_col, f"Local IP address: {ip_adress()}")
     net_start_col -= 1
 
 
@@ -176,7 +184,7 @@ def draw_screen(stdscr):
         stdscr.erase()
 
         if not check_terminal_size(stdscr):
-            stdscr.addstr(0, 0, "Resizing terminal to at least 100x20...", curses.color_pair(1))
+            stdscr.addstr(0, 0, "Resizing terminal to at least 135x50...", curses.color_pair(1))
             check_terminal_size(stdscr)
         else:
             draw_content(stdscr)
