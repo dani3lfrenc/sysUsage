@@ -191,15 +191,26 @@ def draw_screen(stdscr):
             # Draw the bottom bar
             w_rows, w_cols = stdscr.getmaxyx()
             stdscr.addstr(w_rows - 1, 0, "Press \"q\" to exit", curses.color_pair(2))
-            stdscr.addstr(w_rows - 1, 20, "Press \"s\" for search", curses.color_pair(2))
 
         stdscr.refresh()
 
-        key = stdscr.getch()
-        if key == ord('q'):
-            break
+        try:
+            key = stdscr.getch()
+            if key == ord('q'):
+                break
+            elif key == curses.KEY_MOUSE:
+                _, mx, my, _, bstate = curses.getmouse()
+                if bstate & curses.BUTTON1_CLICKED:
+                    stdscr.addstr(w_rows - 2, 0, f"Mouse clicked at {mx}, {my}", curses.color_pair(1))
+                    stdscr.refresh()
+        except curses.error:
+            pass
+
+
 
 def main():
+    curses.initscr()
+    curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
     curses.wrapper(draw_screen)
 
 if __name__ == "__main__":
