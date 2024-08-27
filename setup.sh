@@ -1,39 +1,26 @@
 #!/bin/bash
 
-PYTHON_SCRIPT="susage"
+FILE_NAME="susage"
 
 
-SCRIPT_DIR="$(pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 
-SCRIPT_PATH="$SCRIPT_DIR/$PYTHON_SCRIPT.py"
+FILE_PATH="${SCRIPT_DIR}/${FILE_NAME}.py"
+
+DEST_DIR="/usr/local/bin"
 
 
-if [[ ! -f "$SCRIPT_PATH" ]]; then
-  echo "Error: The file $SCRIPT_PATH does not exist."
-  exit 1
+if [ ! -d "$DEST_DIR" ]; then
+    exit 1
 fi
 
 
-chmod +x "$SCRIPT_PATH"
+sudo pip install -r "${SCRIPT_DIR}/requirements.txt"
 
 
-cat << EOF | sudo tee /usr/local/bin/$PYTHON_SCRIPT
-#!/bin/bash
-python3 $SCRIPT_PATH "\$@"
-EOF
+chmod +x "$FILE_PATH"
 
+sudo mv "$FILE_PATH" "$DEST_DIR/$FILE_NAME"
 
-sudo chmod +x /usr/local/bin/$PYTHON_SCRIPT
-
-
-pip3 show psutil &> /dev/null
-
-if [[ $? -ne 0 ]]; then
-  echo "psutil is not installed. Installing..."
-  pip3 install psutil
-else
-  echo "psutil is already installed."
-fi
-
-echo "Setup complete. You can now run the script by typing '$PYTHON_SCRIPT' from anywhere in the terminal."
+echo "Now you can execute the command: $FILE_NAME"

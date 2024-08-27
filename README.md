@@ -51,8 +51,13 @@ After doing so, move to the directory you have just downloaded and:
 
 From now on you can call "susage" everywhere from your terminal and the program would start
 
-## On Windows (Cooming soon)
+## On Windows
 
+```bash
+./setup.bat
+```
+
+From now on you can call "susage" everywhere from your terminal and the program would start
 
 ## Authors
 
