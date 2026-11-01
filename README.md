@@ -53,8 +53,8 @@ From now on you can call "susage" everywhere from your terminal and the program 
 
 ## On Windows
 
-```bash
-./setup.bat
+```bat
+setup.bat
 ```
 
 From now on you can call "susage" everywhere from your terminal and the program would start
